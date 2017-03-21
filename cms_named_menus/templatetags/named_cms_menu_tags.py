@@ -35,7 +35,7 @@ class ShowMultipleMenu(ShowMenu):
     )
 
     def get_context(self, context, **kwargs):
-
+        self._renderer = context.get('cms_menu_renderer', None)
         menu_name = kwargs.pop('menu_name')
 
         context.update({'children': [],
@@ -111,7 +111,10 @@ class ShowMultipleMenu(ShowMenu):
 
                 page = get_page_draft(Page.objects.get(id=id))
 
-                final_node = page_to_node(page, page, 0)
+                try:
+                    final_node = page_to_node(page, page, 0)
+                except TypeError:
+                    final_node = page_to_node(self._renderer, page, page, 0)
 
             final_node.children = []
             final_node.parent = []
